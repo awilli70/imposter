@@ -1,9 +1,24 @@
 import { Link } from "react-router-dom"
 import amogus from "../imgs/imposter.png"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 export default function Register() {
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
+
+    const sendRegister = () => {
+        let formData = new FormData()
+        formData.append("name", name)
+        formData.append("number", number)
+
+        fetch('http://127.0.0.1:8080/register', {
+            method: 'POST',
+            body: formData,
+        })
+        navigate("/players", { replace: true })
+    }
+
+    const navigate = useNavigate()
 
     return (
         <div className="flex flex-col min-h-screen justify-start items-center pt-4">
@@ -35,7 +50,7 @@ export default function Register() {
                             onChange={e => setNumber(e.target.value)}
                             className="join-item input input-bordered flex items-center gap-2 w-full focus:outline-none" />
                     </div>
-                    <button className="btn btn-primary w-1/2 m-2">Submit</button>
+                    <button className="btn btn-primary w-1/2 m-2" onClick={() => sendRegister()}>Submit</button>
                 </div>
                 <div className="card-actions text-center items-center">
                 </div>
