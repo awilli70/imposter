@@ -1,5 +1,20 @@
+import { useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
+
 export default function Players() {
+    const WS_URL = "http://127.0.0.1:8080/players"
+
+    const ws = useRef(null)
+
+    useEffect(() => {
+        ws.current = new WebSocket(WS_URL)
+
+        ws.current.addEventListener("message", (e) => console.log(JSON.parse(e.data)))
+
+        const wsCurrent = ws.current
+        return () => wsCurrent.close()
+    }, [])
+
     return (
         <div className="flex flex-col min-h-screen justify-start items-center pt-4">
             <div className="w-10/12">
