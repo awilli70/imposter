@@ -41,6 +41,14 @@ var upgrader = websocket.Upgrader{
     },
 }
 
+func updateAllWS() {
+    for e := connChannels.Front(); e != nil; e = e.Next() {
+        if channel, ok := e.Value.(chan bool); ok {
+            channel <- true
+        }
+    }
+}
+
 func register(c *gin.Context) {
     // Add player to playermap
     p := Player{
@@ -54,11 +62,20 @@ func register(c *gin.Context) {
     for k, _ := range players {
         fmt.Println(k, players[k])
     }
-    for e := connChannels.Front(); e != nil; e = e.Next() {
-        if channel, ok := e.Value.(chan bool); ok {
-            channel <- true
-        }
+    updateAllWS();
+    c.Status(200)
+}
+
+func togglePlayer(c *gin.Context) {
+    // Add player to playermap
+    p := players[c.PostForm("name")]
+    p.Alive = !p.Alive
+    players[p.Name] = p
+
+    for k, _ := range players {
+        fmt.Println(k, players[k])
     }
+    updateAllWS();
     c.Status(200)
 }
 
@@ -121,6 +138,7 @@ func main() {
     router := gin.Default()
     router.Use(cors.Default())
     router.POST("/register", register)
+    router.POST("/togglePlayer", togglePlayer)
     router.GET("/players", playerWS)
     router.Run(":8080")
 }
