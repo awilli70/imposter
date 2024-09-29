@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"
 import Players from './views/players.jsx'
 import Register from './views/register.jsx'
+import Admin from './views/admin.jsx'
 
 const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
+    },
+    {
+        path: "/admin",
+        element: <Admin />
     }
 ])
 
