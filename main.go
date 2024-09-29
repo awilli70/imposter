@@ -7,20 +7,22 @@ import (
     "container/list"
     "fmt"
     "net/http"
+    "math/rand/v2"
+    "strconv"
 )
 
-type Role int
+type role int
 
 const (
-    ROLE_UNASSIGNED Role = iota
-    ROLE_CREWMATE
-    ROLE_IMPOSTER
+    ROLE_UNASSIGNED role = 1
+    ROLE_CREWMATE role = 2
+    ROLE_IMPOSTER role = 3
 )
 
 type Player struct {
     Name string
     Number string
-    role Role
+    Role role
     Alive bool
 }
 
@@ -54,7 +56,7 @@ func register(c *gin.Context) {
     p := Player{
         Name: c.PostForm("name"),
         Number: c.PostForm("number"),
-        role: ROLE_UNASSIGNED,
+        Role: ROLE_UNASSIGNED,
         Alive: true,
     }
 
@@ -90,7 +92,7 @@ func flatPlayers() PlayerList {
     }
     fmt.Println(p)
 
-    return p 
+    return p
 }
 
 func socketReader(ws *websocket.Conn, comms chan bool) {
@@ -134,11 +136,59 @@ func playerWS(c *gin.Context) {
     }
 }
 
+func startGame (c *gin.Context) {
+    imposterCt, _ := strconv.Atoi(c.PostForm("imposters"))
+    var imposters = make(map[int]bool)
+
+    for i := range (imposterCt) {
+        idx := rand.IntN(len(players))
+        if _, ok := imposters[idx]; ok {
+            i--
+            continue
+        }
+        imposters[idx] = true
+        fmt.Println(idx)
+
+    }
+    idx := 0
+    for k, v := range players {
+        if _, ok := imposters[idx]; ok {
+            v.Role = ROLE_IMPOSTER
+        } else {
+            v.Role = ROLE_CREWMATE
+        }
+        players[k] = v
+        idx++
+    }
+
+    updateAllWS();
+    c.Status(200)
+}
+
+func resetGame (c *gin.Context) {
+    for k, v := range players {
+        v.Role = ROLE_UNASSIGNED
+        v.Alive = true
+        players[k] = v
+    }
+    updateAllWS();
+    c.Status(200)
+}
+
+func resetAll(c *gin.Context) {
+    clear(players)
+    updateAllWS();
+    c.Status(200)
+}
+
 func main() {
     router := gin.Default()
     router.Use(cors.Default())
     router.POST("/register", register)
     router.POST("/togglePlayer", togglePlayer)
     router.GET("/players", playerWS)
+    router.POST("/start", startGame)
+    router.POST("/reset", resetGame)
+    router.POST("/restart", resetAll)
     router.Run(":8080")
 }
