@@ -1,21 +1,30 @@
 import { Link, useNavigate } from "react-router-dom"
 import amogus from "../imgs/imposter.png"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 export default function Register() {
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
+    const [clickCount, setClickCount] = useState(0)
 
     const sendRegister = () => {
         let formData = new FormData()
         formData.append("name", name)
         formData.append("number", number)
 
-        fetch('http://127.0.0.1:8080/register', {
+        console.log(location.host.split(':')[0])
+        fetch(`http://${location.host.split(':')[0]}:8080/api/register`, {
             method: 'POST',
             body: formData,
         })
         navigate("/players", { replace: true })
     }
+
+    useEffect(() => {
+        if (clickCount >= 3) {
+            navigate("/admin", { replace: true })
+        }
+    }, [clickCount])
+
 
     const navigate = useNavigate()
 
@@ -29,7 +38,7 @@ export default function Register() {
             </div>
             <div className="card bg-base-100 w-10/12 shadow-xl mt-4">
                 <figure>
-                    <img className="h-24" src={amogus} alt="pink amogus" />
+                    <img className="h-24" src={amogus} alt="pink amogus" onClick={() => setClickCount(clickCount + 1)} />
                 </figure>
                 <div className="card-body text-center items-center">
                     <h2 className="card-title text-3xl text-bold">Super secure gathering of PII</h2>

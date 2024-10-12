@@ -9,20 +9,20 @@ export default function Admin() {
         let formData = new FormData()
         formData.append("imposters", imposters)
 
-        fetch('http://127.0.0.1:8080/start', {
+        fetch(`http://${location.host.split(':')[0]}:8080/api/start`, {
             method: 'POST',
             body: formData,
         })
     }
 
     const sendReset = () => {
-        fetch('http://127.0.0.1:8080/reset', {
+        fetch(`http://${location.host.split(':')[0]}:8080/api/reset`, {
             method: 'POST',
         })
     }
 
     const sendRestart = () => {
-        fetch('http://127.0.0.1:8080/restart', {
+        fetch(`http://${location.host.split(':')[0]}:8080/api/restart`, {
             method: 'POST',
         })
     }
