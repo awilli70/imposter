@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker stop imposter > /dev/null
+docker rm imposter > /dev/null
+docker build -t imposter .
+docker run --name imposter -p 8080:8080 -d imposter
