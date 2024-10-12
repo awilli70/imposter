@@ -38,8 +38,7 @@ var upgrader = websocket.Upgrader{
     ReadBufferSize: 1024,
     WriteBufferSize: 1024,
     CheckOrigin: func(r *http.Request) bool {
-        origin := r.Header.Get("Origin")
-        return origin == "http://localhost:5173"
+        return true
     },
 }
 
@@ -184,11 +183,15 @@ func resetAll(c *gin.Context) {
 func main() {
     router := gin.Default()
     router.Use(cors.Default())
-    router.POST("/register", register)
-    router.POST("/togglePlayer", togglePlayer)
-    router.GET("/players", playerWS)
-    router.POST("/start", startGame)
-    router.POST("/reset", resetGame)
-    router.POST("/restart", resetAll)
+    api := router.Group("/api")
+    api.POST("/register", register)
+    api.POST("/togglePlayer", togglePlayer)
+    api.GET("/players", playerWS)
+    api.POST("/start", startGame)
+    api.POST("/reset", resetGame)
+    api.POST("/restart", resetAll)
+    router.StaticFS("/assets", http.Dir("ui/dist/assets"))
+    router.StaticFile("/", "ui/dist/index.html")
+    router.StaticFile("/imposter.png", "ui/dist/imposter.png")
     router.Run(":8080")
 }

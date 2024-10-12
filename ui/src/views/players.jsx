@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 export default function Players() {
-    const WS_URL = "http://127.0.0.1:8080/players"
+    const WS_URL = `http://${location.host.split(':')[0]}:8080/api/players`
 
     const ws = useRef(null)
     const [players, setPlayers] = useState({})
@@ -11,7 +11,7 @@ export default function Players() {
         let formData = new FormData()
         formData.append("name", name)
 
-        fetch('http://127.0.0.1:8080/togglePlayer', {
+        fetch(`http://${location.host.split(':')[0]}:8080/api/togglePlayer`, {
             method: 'POST',
             body: formData,
         })
