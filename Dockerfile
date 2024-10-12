@@ -30,7 +30,7 @@ RUN go mod download
 COPY . .
 
 # Copy built frontend files from the previous stage
-COPY --from=frontend-builder /app/ui/dist ./ui
+COPY --from=frontend-builder /app/ui/ ./ui
 
 # Build the Go app
 RUN CGO_ENABLED=0 go build -o main .
