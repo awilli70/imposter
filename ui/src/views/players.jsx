@@ -21,29 +21,29 @@ export default function Players() {
         return (
             <tr key={player.Name}>
                 <td>
-                    <div className="font-bold w-28">{player.Name}</div>
+                    {
+                        (player.Alive && Number(player.Role) !== 1) ?
+                            <div class="badge badge-sm bg-lime-500"></div> :
+                            <div class="badge badge-sm badge-neutral"></div>
+                    }
+                </td>
+                <td>
+                    <h4 className="font-bold text-base">
+                        {player.Name}
+                    </h4>
                 </td>
                 {Number(player.Role) !== 1 ?
                     <>
-                        <td className="w-full">
-                            {player.Alive ?
-                                <div class="badge bg-lime-500">Alive</div> :
-                                <div class="badge badge-neutral">Dead</div>
-                            }
-                        </td>
                         <td>
                             {player.Alive ?
-                                <button className="btn bg-red-500 hover:bg-red-600 w-24" onClick={() => togglePlayer(player.Name)}>KILL</button> :
-                                <button className="btn btn-neutral w-24" onClick={() => togglePlayer(player.Name)}>RESURRECT</button>
+                                <button className="btn bg-red-500 hover:bg-red-600 w-fit" onClick={() => togglePlayer(player.Name)}>KILL</button> :
+                                <button className="btn btn-neutral w-fit" onClick={() => togglePlayer(player.Name)}>REVIVE</button>
                             }
                         </td>
                     </> :
                     <>
-                        <td className="w-full">
-                            <div class="badge badge-neutral">Inactive</div>
-                        </td>
                         <td>
-                            <button className="btn btn-neutral w-24 btn-disabled" onClick={() => togglePlayer(player.Name)}>INACTIVE</button>
+                            <button className="btn btn-neutral w-fit btn-disabled" onClick={() => togglePlayer(player.Name)}>OUT</button>
                         </td>
                     </>
                 }
@@ -78,14 +78,14 @@ export default function Players() {
 
                 <div class="card bg-base-100 w-full shadow-xl">
                     <div class="card-body">
-                        <h2 class="card-title text-3xl">Player Status</h2>
-                        <div className="overflow-x-auto">
+                        <h2 class="card-title text-2xl">Player Status</h2>
+                        <div className="overflow-x-scroll">
                             <table className="table">
                                 {/* head */}
                                 <thead>
                                     <tr>
+                                        <th className="w-5"></th>
                                         <th>Name</th>
-                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
