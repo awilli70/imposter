@@ -192,6 +192,7 @@ func main() {
     api.POST("/restart", resetAll)
     router.StaticFS("/assets", http.Dir("ui/dist/assets"))
     router.StaticFile("/", "ui/dist/index.html")
+    router.StaticFile("/players", "ui/dist/index.html")
     router.StaticFile("/imposter.png", "ui/dist/imposter.png")
     router.Run(":8080")
 }
