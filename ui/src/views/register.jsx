@@ -1,15 +1,17 @@
 import { Link, useNavigate } from "react-router-dom"
 import amogus from "../imgs/imposter.png"
 import { useEffect, useState } from "react"
-export default function Register() {
+
+export default function Register({ nameSetter }) {
     const [name, setName] = useState("")
-    const [number, setNumber] = useState("")
+    // const [number, setNumber] = useState("")
     const [clickCount, setClickCount] = useState(0)
 
     const sendRegister = () => {
         let formData = new FormData()
         formData.append("name", name)
-        formData.append("number", number)
+        formData.append("number", "")
+        nameSetter(name)
 
         console.log(location.host.split(':')[0])
         fetch(`http://${location.host.split(':')[0]}:8080/api/register`, {
@@ -51,13 +53,13 @@ export default function Register() {
                             onChange={e => setName(e.target.value)}
                             className="join-item input input-bordered flex items-center gap-2 w-full focus:outline-none" />
                     </div>
-                    <div className="join w-full m-2">
-                        <div className="w-28 join-item btn btn-secondary pointer-events-none">Number ;)</div>
-                        <input type="text" placeholder="555-555-5555"
-                            value={number}
-                            onChange={e => setNumber(e.target.value)}
-                            className="join-item input input-bordered flex items-center gap-2 w-full focus:outline-none" />
-                    </div>
+                    {/* <div className="join w-full m-2"> */}
+                    {/*     <div className="w-28 join-item btn btn-secondary pointer-events-none">Number ;)</div> */}
+                    {/*     <input type="text" placeholder="555-555-5555" */}
+                    {/*         value={number} */}
+                    {/*         onChange={e => setNumber(e.target.value)} */}
+                    {/*         className="join-item input input-bordered flex items-center gap-2 w-full focus:outline-none" /> */}
+                    {/* </div> */}
                     <button className="btn btn-primary w-1/2 m-2" onClick={() => sendRegister()}>Submit</button>
                 </div>
                 <div className="card-actions text-center items-center">

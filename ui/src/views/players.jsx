@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
-export default function Players() {
+export default function Players({ n, nameSetter }) {
     const WS_URL = `http://${location.host.split(':')[0]}:8080/api/players`
 
     const ws = useRef(null)
@@ -15,6 +15,27 @@ export default function Players() {
             method: 'POST',
             body: formData,
         })
+    }
+
+    const showRole = () => {
+        if (!players["Players"]) { return (<></>) }
+        for (let player of players["Players"]) {
+            if (player.Name === n) {
+                if (player.Role == 1) {
+                    return (<p className="text-lg p-2">Unassigned</p>)
+                } else if (player.Role == 2) {
+                    return (<p className="text-lg p-2">Crewmate</p>)
+                } else if (player.Role == 3) {
+                    return (<div className="p-2">
+                        <p className="text-lg">Imposter! Your team is:</p>
+                        {players["Players"]
+                            .filter((x) => x.Role == 3)
+                            .sort(playerSort)
+                            .map((p) => <p className="text-lg">{p.Name}</p>)}
+                    </div>)
+                }
+            }
+        }
     }
 
     const buildPlayer = (player) => {
@@ -75,6 +96,17 @@ export default function Players() {
                     <Link className="btn btn-lg btn-primary w-1/2 text-4xl join-item" to={"/players"}><button >Players</button></Link>
                     <Link className="btn btn-lg btn-tertiary w-1/2 text-4xl join-item" to={"/register"}><button >Register</button></Link>
                 </div>
+
+                {n !== "" &&
+                    <div className="collapse bg-base-200 mt-2 collapse-arrow">
+                        <input type="checkbox" />
+                        <div className="collapse-title text-xl font-medium">{n} Role</div>
+                        <div className="collapse-content">
+                            {showRole()}
+                            <div className="btn btn-md btn-accent" onClick={() => { nameSetter("") }}>Reset Name</div>
+                        </div>
+                    </div>
+                }
 
                 <div class="card bg-base-100 w-full shadow-xl">
                     <div class="card-body">
